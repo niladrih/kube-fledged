@@ -1,0 +1,275 @@
+project_name: kube-fledged
+
+before:
+  hooks:
+    - go mod tidy
+builds:
+  - id: kubefledged-controller
+    main: ./cmd/controller
+    binary: kubefledged-controller
+    env:
+      - CGO_ENABLED=0
+    ldflags:
+      - '-s -w -extldflags "-static"'
+    goos:
+      - linux
+    goarch:
+      - amd64
+      - arm64
+    goarm:
+      - 7
+      - 8
+    mod_timestamp: '{{ .CommitTimestamp }}'
+    hooks:
+      pre: ./hack/update-codegen.sh
+  - id: kubefledged-webhook-server
+    main: ./cmd/webhook-server/main.go
+    binary: kubefledged-webhook-server
+    env:
+      - CGO_ENABLED=0
+    ldflags:
+      - '-s -w -extldflags "-static"'
+    goos:
+      - linux
+    goarch:
+      - amd64
+      - arm64
+    goarm:
+      - 7
+      - 8
+    mod_timestamp: '{{ .CommitTimestamp }}'
+dockers:
+  - id: kubefledged-controller-linux_amd64
+    goos: linux
+    goarch: amd64
+    ids:
+    - kubefledged-controller
+    image_templates:
+      - "{{ .Env.CONTROLLER_IMAGE_REPO }}:{{ .Version }}-amd64"
+      - "{{ .Env.CONTROLLER_IMAGE_REPO }}:latest-amd64"
+    dockerfile: '{{ .Env.DOCKERFILE_CONTROLLER }}'
+    use: buildx
+    build_flag_templates:
+      - "--platform=linux/amd64"
+      - "--build-arg=ALPINE_VERSION={{ .Env.ALPINE_VERSION }}"
+      - "--build-arg=GOLANG_VERSION={{ .Env.GOLANG_VERSION }}"
+  - id: kubefledged-controller-linux_arm64v7
+    goos: linux
+    goarch: arm64
+    goarm: '7'
+    ids:
+      - kubefledged-controller
+    image_templates:
+      - "{{ .Env.CONTROLLER_IMAGE_REPO }}:{{ .Version }}-arm64v7"
+      - "{{ .Env.CONTROLLER_IMAGE_REPO }}:latest-arm64v7"
+    dockerfile: '{{ .Env.DOCKERFILE_CONTROLLER }}'
+    use: buildx
+    build_flag_templates:
+      - "--platform=linux/arm64/v7"
+      - "--build-arg=ALPINE_VERSION={{ .Env.ALPINE_VERSION }}"
+      - "--build-arg=GOLANG_VERSION={{ .Env.GOLANG_VERSION }}"
+  - id: kubefledged-controller-linux_arm64v8
+    goos: linux
+    goarch: arm64
+    goarm: '8'
+    ids:
+      - kubefledged-controller
+    image_templates:
+      - "{{ .Env.CONTROLLER_IMAGE_REPO }}:{{ .Version }}-arm64v8"
+      - "{{ .Env.CONTROLLER_IMAGE_REPO }}:latest-arm64v8"
+    dockerfile: '{{ .Env.DOCKERFILE_CONTROLLER }}'
+    use: buildx
+    build_flag_templates:
+      - "--platform=linux/arm64/v8"
+      - "--build-arg=ALPINE_VERSION={{ .Env.ALPINE_VERSION }}"
+      - "--build-arg=GOLANG_VERSION={{ .Env.GOLANG_VERSION }}"
+ 
+  - id: kubefledged-cri-client-linux_amd64
+    goos: linux
+    goarch: amd64
+    ids:
+      - kubefledged-controller
+    image_templates:
+      - "{{ .Env.CRICTL_IMAGE_REPO }}:{{ .Version }}-amd64"
+      - "{{ .Env.CRICTL_IMAGE_REPO }}:latest-amd64"
+    dockerfile: '{{ .Env.DOCKERFILE_CRI_CLIENT }}'
+    use: buildx
+    build_flag_templates:
+      - "--platform=linux/amd64"
+      - "--build-arg=ALPINE_VERSION={{ .Env.ALPINE_VERSION }}"
+      - "--build-arg=CRICTL_VERSION={{ .Env.CRICTL_VERSION }}"
+      - "--build-arg=DOCKER_VERSION={{ .Env.DOCKER_VERSION }}"
+  - id: kubefledged-cri-client-linux_arm64v7
+    goos: linux
+    goarch: arm64
+    goarm: '7'
+    ids:
+      - kubefledged-controller
+    image_templates:
+      - "{{ .Env.CRICTL_IMAGE_REPO }}:{{ .Version }}-arm64v7"
+      - "{{ .Env.CRICTL_IMAGE_REPO }}:latest-arm64v7"
+    dockerfile: '{{ .Env.DOCKERFILE_CRI_CLIENT }}'
+    use: buildx
+    build_flag_templates:
+      - "--platform=linux/arm64/v7"
+      - "--build-arg=ALPINE_VERSION={{ .Env.ALPINE_VERSION }}"
+      - "--build-arg=CRICTL_VERSION={{ .Env.CRICTL_VERSION }}"
+      - "--build-arg=DOCKER_VERSION={{ .Env.DOCKER_VERSION }}"
+  - id: kubefledged-cri-client-linux_arm64v8
+    goos: linux
+    goarch: arm64
+    goarm: '8'
+    ids:
+      - kubefledged-controller
+    image_templates:
+      - "{{ .Env.CRICTL_IMAGE_REPO }}:{{ .Version }}-arm64v8"
+      - "{{ .Env.CRICTL_IMAGE_REPO }}:latest-arm64v8"
+    dockerfile: '{{ .Env.DOCKERFILE_CRI_CLIENT }}'
+    use: buildx
+    build_flag_templates:
+    - "--platform=linux/arm64/v8"
+    - "--build-arg=ALPINE_VERSION={{ .Env.ALPINE_VERSION }}"
+    - "--build-arg=CRICTL_VERSION={{ .Env.CRICTL_VERSION }}"
+    - "--build-arg=DOCKER_VERSION={{ .Env.DOCKER_VERSION }}"
+
+  - id: kubefledged-webhook-server-linux_amd64
+    goos: linux
+    goarch: amd64
+    ids:
+    -  kubefledged-webhook-server
+    image_templates:
+      - "{{ .Env.WEBHOOK_SERVER_IMAGE_REPO }}:{{ .Version }}-amd64"
+      - "{{ .Env.WEBHOOK_SERVER_IMAGE_REPO }}:latest-amd64"
+    dockerfile: '{{ .Env.DOCKERFILE_WEBHOOK_SERVER }}'
+    use: buildx
+    build_flag_templates:
+      - "--platform=linux/amd64"
+      - "--build-arg=ALPINE_VERSION={{ .Env.ALPINE_VERSION }}"
+      - "--build-arg=GOLANG_VERSION={{ .Env.GOLANG_VERSION }}"
+  - id: kubefledged-webhook-server-linux_arm64v7
+    goos: linux
+    goarch: arm64
+    goarm: '7'
+    ids:
+      - kubefledged-webhook-server
+    image_templates:
+      - "{{ .Env.WEBHOOK_SERVER_IMAGE_REPO }}:{{ .Version }}-arm64v7"
+      - "{{ .Env.WEBHOOK_SERVER_IMAGE_REPO }}:latest-arm64v7"
+    dockerfile: '{{ .Env.DOCKERFILE_WEBHOOK_SERVER }}'
+    use: buildx
+    build_flag_templates:
+      - "--platform=linux/arm64/v7"
+      - "--build-arg=ALPINE_VERSION={{ .Env.ALPINE_VERSION }}"
+      - "--build-arg=GOLANG_VERSION={{ .Env.GOLANG_VERSION }}"
+  - id: kubefledged-controller-linux_arm64v8
+    goos: linux
+    goarch: arm64
+    goarm: '8'
+    ids:
+      - kubefledged-webhook-server
+    image_templates:
+      - "{{ .Env.WEBHOOK_SERVER_IMAGE_REPO }}:{{ .Version }}-arm64v8"
+      - "{{ .Env.WEBHOOK_SERVER_IMAGE_REPO }}:latest-arm64v8"
+    dockerfile: '{{ .Env.DOCKERFILE_WEBHOOK_SERVER }}'
+    use: buildx
+    build_flag_templates:
+      - "--platform=linux/arm64/v8"
+      - "--build-arg=ALPINE_VERSION={{ .Env.ALPINE_VERSION }}"
+      - "--build-arg=GOLANG_VERSION={{ .Env.GOLANG_VERSION }}"
+ 
+  - id: kubefledged-operator-linux_amd64
+    goos: linux
+    goarch: amd64
+    ids:
+      - kubefledged-controller
+      - kubefledged-webhook-server
+    image_templates:
+      - "{{ .Env.OPERATOR_IMAGE_REPO }}:{{ .Version }}-amd64"
+      - "{{ .Env.OPERATOR_IMAGE_REPO }}:latest-amd64"
+    dockerfile: '{{ .Env.DOCKERFILE_OPERATOR }}'
+    use: buildx
+    build_flag_templates:
+    - "--platform=linux/amd64"
+    - "--build-arg=OPERATORSDK_VERSION={{ .Env.OPERATORSDK_VERSION }}"
+    extra_files:
+    - ./deploy/kubefledged-operator
+  - id: kubefledged-operator-linux_arm64
+    goos: linux
+    goarch: arm64
+    ids:
+      - kubefledged-controller
+      - kubefledged-webhook-server
+    image_templates:
+      - "{{ .Env.OPERATOR_IMAGE_REPO }}:{{ .Version }}-arm64"
+      - "{{ .Env.OPERATOR_IMAGE_REPO }}:latest-arm64"
+    dockerfile: '{{ .Env.DOCKERFILE_OPERATOR }}'
+    use: buildx
+    build_flag_templates:
+    - "--platform=linux/arm64"
+    - "--build-arg=OPERATORSDK_VERSION={{ .Env.OPERATORSDK_VERSION }}"
+    extra_files:
+    - ./deploy/kubefledged-operator
+docker_manifests:
+  - id: kubefledged-controller-{{ .Version }}
+    name_template: "{{ .Env.CONTROLLER_IMAGE_REPO }}:{{ .Version }}"
+    image_templates:
+      - "{{ .Env.CONTROLLER_IMAGE_REPO }}:{{ .Version }}-amd64"
+      - "{{ .Env.CONTROLLER_IMAGE_REPO }}:{{ .Version }}-arm64v7"
+      - "{{ .Env.CONTROLLER_IMAGE_REPO }}:{{ .Version }}-arm64v8"
+    use: buildx
+  - id: kubefledged-controller-latest
+    name_template: "{{ .Env.CONTROLLER_IMAGE_REPO }}:latest"
+    image_templates:
+      - "{{ .Env.CONTROLLER_IMAGE_REPO }}:latest-amd64"
+      - "{{ .Env.CONTROLLER_IMAGE_REPO }}:latest-arm64v7"
+      - "{{ .Env.CONTROLLER_IMAGE_REPO }}:latest-arm64v8"
+    use: buildx
+
+  - id: kubefledged-cri-client-{{ .Version }}
+    name_template: "{{ .Env.CRICTL_IMAGE_REPO }}:{{ .Version }}"
+    image_templates:
+      - "{{ .Env.CRICTL_IMAGE_REPO }}:{{ .Version }}-amd64"
+      - "{{ .Env.CRICTL_IMAGE_REPO }}:{{ .Version }}-arm64v7"
+      - "{{ .Env.CRICTL_IMAGE_REPO }}:{{ .Version }}-arm64v8"
+    use: buildx
+  - id: kubefledged-cri-client-latest
+    name_template: "{{ .Env.CRICTL_IMAGE_REPO }}:latest"
+    image_templates:
+      - "{{ .Env.CRICTL_IMAGE_REPO }}:latest-amd64"
+      - "{{ .Env.CRICTL_IMAGE_REPO }}:latest-arm64v7"
+      - "{{ .Env.CRICTL_IMAGE_REPO }}:latest-arm64v8"
+    use: buildx
+
+  - id: kubefledged-webhook-server-{{ .Version }}
+    name_template: "{{ .Env.WEBHOOK_SERVER_IMAGE_REPO }}:{{ .Version }}"
+    image_templates:
+      - "{{ .Env.WEBHOOK_SERVER_IMAGE_REPO }}:{{ .Version }}-amd64"
+      - "{{ .Env.WEBHOOK_SERVER_IMAGE_REPO }}:{{ .Version }}-arm64v7"
+      - "{{ .Env.WEBHOOK_SERVER_IMAGE_REPO }}:{{ .Version }}-arm64v8"
+    use: buildx
+  - id: kubefledged-webhook-server-latest
+    name_template: "{{ .Env.WEBHOOK_SERVER_IMAGE_REPO }}:latest"
+    image_templates:
+      - "{{ .Env.WEBHOOK_SERVER_IMAGE_REPO }}:latest-amd64"
+      - "{{ .Env.WEBHOOK_SERVER_IMAGE_REPO }}:latest-arm64v7"
+      - "{{ .Env.WEBHOOK_SERVER_IMAGE_REPO }}:latest-arm64v8"
+    use: buildx
+
+  - id: kubefledged-operator-{{ .Version }}
+    name_template: "{{ .Env.OPERATOR_IMAGE_REPO }}:{{ .Version }}"
+    image_templates:
+      - "{{{ .Env.OPERATOR_IMAGE_REPO }}:{{ .Version }}-amd64"
+      - "{{ .Env.OPERATOR_IMAGE_REPO }}:{{ .Version }}-arm64v7"
+      - "{{ .Env.OPERATOR_IMAGE_REPO }}:{{ .Version }}-arm64v8"
+    use: buildx
+  - id: kubefledged-operator-latest
+    name_template: "{{ .Env.OPERATOR_IMAGE_REPO }}:latest"
+    image_templates:
+      - "{{ .Env.OPERATOR_IMAGE_REPO }}:latest-amd64"
+      - "{{ .Env.OPERATOR_IMAGE_REPO }}:latest-arm64v7"
+      - "{{ .Env.OPERATOR_IMAGE_REPO }}:latest-arm64v8"
+    use: buildx
+source:
+  enabled: true
+changelog:
+  skip: true
