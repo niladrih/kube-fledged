@@ -189,10 +189,11 @@ dockers:
     dockerfile: '{{ .Env.DOCKERFILE_OPERATOR }}'
     use: buildx
     build_flag_templates:
-    - "--platform=linux/amd64"
-    - "--build-arg=OPERATORSDK_VERSION={{ .Env.OPERATORSDK_VERSION }}"
+      - "--platform=linux/amd64"
+      - "--build-arg=OPERATORSDK_VERSION={{ .Env.OPERATORSDK_VERSION }}"
     extra_files:
-    - ./deploy/kubefledged-operator
+      - ./deploy/kubefledged-operator/helm-charts
+      - ./deploy/kubefledged-operator/watches.yaml
   - id: kubefledged-operator-linux_arm64
     goos: linux
     goarch: arm64
@@ -205,10 +206,11 @@ dockers:
     dockerfile: '{{ .Env.DOCKERFILE_OPERATOR }}'
     use: buildx
     build_flag_templates:
-    - "--platform=linux/arm64"
-    - "--build-arg=OPERATORSDK_VERSION={{ .Env.OPERATORSDK_VERSION }}"
+      - "--platform=linux/arm64"
+      - "--build-arg=OPERATORSDK_VERSION={{ .Env.OPERATORSDK_VERSION }}"
     extra_files:
-    - ./deploy/kubefledged-operator
+      - ./deploy/kubefledged-operator/helm-charts
+      - ./deploy/kubefledged-operator/watches.yaml
 docker_manifests:
   - id: kubefledged-controller-{{ .Version }}
     name_template: "{{ .Env.CONTROLLER_IMAGE_REPO }}:{{ .Version }}"
