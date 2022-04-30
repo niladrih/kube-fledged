@@ -45,11 +45,7 @@ on:
       operator_image_repo:
         description: 'kubefledged-operator repository'
         required: true
-        type: string
-      operator_target_platforms:
-        description: 'target platforms for operator multi-arch image'
-        required: true
-        type: string        
+        type: string      
       operatorsdk_version:
         description: 'operator sdk release version'
         required: true
@@ -61,11 +57,7 @@ on:
       release_version:
         description: 'kube-fledged release version'
         required: true
-        type: string
-      target_platforms:
-        description: 'target platforms for multi-arch images'
-        required: true
-        type: string        
+        type: string   
       webhook_server_image_repo:
         description: 'kubefledged-webhook-server repository'
         required: true
