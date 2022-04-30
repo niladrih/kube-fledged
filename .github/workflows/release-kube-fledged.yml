@@ -49,11 +49,7 @@ on:
       operatorsdk_version:
         description: 'operator sdk release version'
         required: true
-        type: string
-      push_image:
-        description: 'whether or not to push built images to dockerhub'
-        required: true
-        type: boolean           
+        type: string         
       webhook_server_image_repo:
         description: 'kubefledged-webhook-server repository'
         required: true
