@@ -94,8 +94,6 @@ jobs:
       golang_version: 1.17.7
       operator_image_repo: docker.io/niladrih/kubefledged-operator
       operatorsdk_version: v1.18.0
-      push_image: false
-      release_version: v0.10.0
       webhook_server_image_repo: docker.io/niladrih/kubefledged-webhook-server
     secrets:
       dockerhub_user: ${{ secrets.DOCKERHUB_USER }}

@@ -54,10 +54,6 @@ on:
         description: 'whether or not to push built images to dockerhub'
         required: true
         type: boolean           
-      release_version:
-        description: 'kube-fledged release version'
-        required: true
-        type: string   
       webhook_server_image_repo:
         description: 'kubefledged-webhook-server repository'
         required: true
@@ -74,6 +70,9 @@ jobs:
   release_kube_fledged:
     runs-on: ubuntu-latest
     steps:
+    - name: Set Release Tag
+      run: echo "VERSION_TAG=${GITHUB_REF#refs/*/v}" >> $GITHUB_ENV
+
     - name: Checkout
       uses: actions/checkout@v3
       with:
@@ -104,7 +103,7 @@ jobs:
       uses: goreleaser/goreleaser-action@v2
       with:
         distribution: goreleaser
-        version: ${{ inputs.release_version }}
+        version: ${{ env.VERSION_TAG }}
         args: release --rm-dist
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

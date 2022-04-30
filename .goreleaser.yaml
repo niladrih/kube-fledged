@@ -161,7 +161,7 @@ dockers:
       - "--platform=linux/arm64/v7"
       - "--build-arg=ALPINE_VERSION={{ .Env.ALPINE_VERSION }}"
       - "--build-arg=GOLANG_VERSION={{ .Env.GOLANG_VERSION }}"
-  - id: kubefledged-controller-linux_arm64v8
+  - id: kubefledged-webhook-server-linux_arm64v8
     goos: linux
     goarch: arm64
     goarm: '8'
@@ -216,14 +216,14 @@ docker_manifests:
       - "{{ .Env.CONTROLLER_IMAGE_REPO }}:{{ .Version }}-amd64"
       - "{{ .Env.CONTROLLER_IMAGE_REPO }}:{{ .Version }}-arm64v7"
       - "{{ .Env.CONTROLLER_IMAGE_REPO }}:{{ .Version }}-arm64v8"
-    use: buildx
+
   - id: kubefledged-controller-latest
     name_template: "{{ .Env.CONTROLLER_IMAGE_REPO }}:latest"
     image_templates:
       - "{{ .Env.CONTROLLER_IMAGE_REPO }}:latest-amd64"
       - "{{ .Env.CONTROLLER_IMAGE_REPO }}:latest-arm64v7"
       - "{{ .Env.CONTROLLER_IMAGE_REPO }}:latest-arm64v8"
-    use: buildx
+ 
 
   - id: kubefledged-cri-client-{{ .Version }}
     name_template: "{{ .Env.CRICTL_IMAGE_REPO }}:{{ .Version }}"
@@ -231,14 +231,14 @@ docker_manifests:
       - "{{ .Env.CRICTL_IMAGE_REPO }}:{{ .Version }}-amd64"
       - "{{ .Env.CRICTL_IMAGE_REPO }}:{{ .Version }}-arm64v7"
       - "{{ .Env.CRICTL_IMAGE_REPO }}:{{ .Version }}-arm64v8"
-    use: buildx
+  
   - id: kubefledged-cri-client-latest
     name_template: "{{ .Env.CRICTL_IMAGE_REPO }}:latest"
     image_templates:
       - "{{ .Env.CRICTL_IMAGE_REPO }}:latest-amd64"
       - "{{ .Env.CRICTL_IMAGE_REPO }}:latest-arm64v7"
       - "{{ .Env.CRICTL_IMAGE_REPO }}:latest-arm64v8"
-    use: buildx
+ 
 
   - id: kubefledged-webhook-server-{{ .Version }}
     name_template: "{{ .Env.WEBHOOK_SERVER_IMAGE_REPO }}:{{ .Version }}"
@@ -246,14 +246,14 @@ docker_manifests:
       - "{{ .Env.WEBHOOK_SERVER_IMAGE_REPO }}:{{ .Version }}-amd64"
       - "{{ .Env.WEBHOOK_SERVER_IMAGE_REPO }}:{{ .Version }}-arm64v7"
       - "{{ .Env.WEBHOOK_SERVER_IMAGE_REPO }}:{{ .Version }}-arm64v8"
-    use: buildx
+
   - id: kubefledged-webhook-server-latest
     name_template: "{{ .Env.WEBHOOK_SERVER_IMAGE_REPO }}:latest"
     image_templates:
       - "{{ .Env.WEBHOOK_SERVER_IMAGE_REPO }}:latest-amd64"
       - "{{ .Env.WEBHOOK_SERVER_IMAGE_REPO }}:latest-arm64v7"
       - "{{ .Env.WEBHOOK_SERVER_IMAGE_REPO }}:latest-arm64v8"
-    use: buildx
+  
 
   - id: kubefledged-operator-{{ .Version }}
     name_template: "{{ .Env.OPERATOR_IMAGE_REPO }}:{{ .Version }}"
@@ -261,14 +261,14 @@ docker_manifests:
       - "{{{ .Env.OPERATOR_IMAGE_REPO }}:{{ .Version }}-amd64"
       - "{{ .Env.OPERATOR_IMAGE_REPO }}:{{ .Version }}-arm64v7"
       - "{{ .Env.OPERATOR_IMAGE_REPO }}:{{ .Version }}-arm64v8"
-    use: buildx
+
   - id: kubefledged-operator-latest
     name_template: "{{ .Env.OPERATOR_IMAGE_REPO }}:latest"
     image_templates:
       - "{{ .Env.OPERATOR_IMAGE_REPO }}:latest-amd64"
       - "{{ .Env.OPERATOR_IMAGE_REPO }}:latest-arm64v7"
       - "{{ .Env.OPERATOR_IMAGE_REPO }}:latest-arm64v8"
-    use: buildx
+
 source:
   enabled: true
 changelog:
