@@ -2,15 +2,15 @@ name: Build kube-fledged
 
 on:
   push:
-    branches: [master, develop]
+    branches: [test-locally, develop]
   pull_request:
-    branches: [master, develop]
+    branches: [test-locally, develop]
   release:
     types: [created]
 
 jobs:
-  push_master:
-    if: github.event_name == 'push' && github.ref_type == 'branch' && github.ref_name == 'master'
+  push_test-locally:
+    if: github.event_name == 'push' && github.ref_type == 'branch' && github.ref_name == 'test-locally'
     uses: ./.github/workflows/build-kube-fledged.yml
     with:
       alpine_version: 3.15.4
