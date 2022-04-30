@@ -6,8 +6,7 @@ on:
   pull_request:
     branches: [test-locally, develop]
   release:
-    types: [published]
-    branches: [test-locally]
+    types: [created]
 
 jobs:
   push_test-locally:
@@ -80,7 +79,7 @@ jobs:
       target_platforms: linux/amd64
       webhook_server_image_repo: docker.io/niladrih/kubefledged-webhook-server
   release:
-    if: github.event_name == 'release' && github.event_action == 'published' && github.ref_type == 'branch' && github.ref_name == 'test-locally'
+    if: contains(github.ref, 'tags/v')
     uses: ./.github/workflows/release-kube-fledged.yml
     with:
       alpine_version: 3.15.0
