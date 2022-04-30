@@ -107,7 +107,7 @@ jobs:
         version: ${{ inputs.release_version }}
         args: release --rm-dist
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.PA_TOKEN }}
         CONTROLLER_IMAGE_REPO: ${{ inputs.controller_image_repo }}
         DOCKERFILE_CONTROLLER: ${{ inputs.dockerfile_controller }}
         CRICTL_IMAGE_REPO: ${{ inputs.crictl_image_repo }}
